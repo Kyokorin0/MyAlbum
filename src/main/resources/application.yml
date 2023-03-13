@@ -1,0 +1,28 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/myalbum?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: 123456
+  #    type: com.zaxxer.hikari.HikariDataSource
+  #    hikari:
+  #      maximum-pool-size: 20
+  #      minimum-idle: 5
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+      #在程序启动时，create删除原表数据，update更新原表数据,create-drop	当sessionFactory关闭，表会自动删除
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQLDialect
+    #新版本方言 org.hibernate.dialect.MySQL5InnoDBDialect旧版本
+    show-sql: true
+    open-in-view: false
+
+  main:
+    web-application-type: servlet
+    #none -> close web service
+    #serlet -> default
