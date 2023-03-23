@@ -1,10 +1,9 @@
 package com.kyoko.myalbum.Service.IMPL;
 
-import com.kyoko.myalbum.DAO.UserRepo;
-import com.kyoko.myalbum.Entity.User;
+import com.kyoko.myalbum.DAO.MyUserRepo;
+import com.kyoko.myalbum.Entity.MyUser;
 import com.kyoko.myalbum.Service.MAPPER.UserServ;
 import com.kyoko.myalbum.record.ReqUser;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,24 +15,26 @@ import java.util.List;
  */
 @Service
 public class UserServImpl implements UserServ {
-    private final UserRepo userRepo;
+    private final MyUserRepo userRepo;
 
     //@Autowired等效构造函数
-    public UserServImpl(UserRepo userRepo) {
+    public UserServImpl(MyUserRepo userRepo) {
         this.userRepo = userRepo;
     }
 
     @Override
-    public List<User> getUsers() {
+    public List<MyUser> getUsers() {
         return userRepo.findAll();
     }
 
     @Override
     public void addUser(ReqUser reqUser) {
-        User ToAddUser = new User();
-        ToAddUser.setUsername(reqUser.username());
-        ToAddUser.setNickname(reqUser.nickname());
-        ToAddUser.setPassword(reqUser.password());
-        userRepo.save(ToAddUser);
+        //todo
+        MyUser toAddMyUser = MyUser.builder()
+                .email(reqUser.email())
+                .password(reqUser.password())
+                .nickname(reqUser.nickname())
+                .build();
+        userRepo.save(toAddMyUser);
     }
 }

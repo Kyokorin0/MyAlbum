@@ -1,6 +1,6 @@
 package com.kyoko.myalbum.Service.MAPPER;
 
-import com.kyoko.myalbum.Entity.User;
+import com.kyoko.myalbum.Entity.MyUser;
 import com.kyoko.myalbum.record.ReqUser;
 
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.List;
  * @Description
  */
 public interface UserServ {
-    List<User> getUsers();
+    List<MyUser> getUsers();
 
     void addUser(ReqUser reqUser);
 }

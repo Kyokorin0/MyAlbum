@@ -6,7 +6,7 @@ package com.kyoko.myalbum.record;
  * @Description
  */
 public record ReqUser(
-        String username,
+        String email,
         String password,
         String nickname
 ) {}

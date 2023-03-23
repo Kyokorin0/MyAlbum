@@ -1,10 +1,8 @@
 package com.kyoko.myalbum.Controller;
 
-import com.kyoko.myalbum.DAO.UserRepo;
-import com.kyoko.myalbum.Entity.User;
+import com.kyoko.myalbum.Entity.MyUser;
 import com.kyoko.myalbum.Service.IMPL.UserServImpl;
 import com.kyoko.myalbum.record.ReqUser;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,16 +14,16 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("api/v1/users")
-public class UserCon {
+public class MyUserCon {
     private final UserServImpl userServ;
 
-    public UserCon(UserServImpl userServ) {
+    public MyUserCon(UserServImpl userServ) {
         this.userServ = userServ;
     }
 
 
     @GetMapping()
-    public List<User> getUsers() {
+    public List<MyUser> getUsers() {
         return userServ.getUsers();
     }
 

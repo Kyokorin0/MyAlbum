@@ -4,9 +4,12 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import lombok.*;
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.util.Objects;
+
 
 /**
  * @author young
@@ -14,6 +17,13 @@ import java.util.Objects;
  * @Description 联系User和Photo
  */
 @Entity
+@Getter
+@Setter
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
+//@NoArgsConstructor//生成无参构造函数，支持@Entity和@Builder
+@Builder//支持链式构造对象,需要显式定义无参构造函数
 public class Shared {
     @Id
     @UuidGenerator(
@@ -28,69 +38,16 @@ public class Shared {
     private Integer ownerID;
     private Integer authID;
 
-    public Shared() {
-
-    }
-
-    @Override
-    public String toString() {
-        return "Shared{" +
-                "PAid='" + PAid + '\'' +
-                ", photoID='" + photoID + '\'' +
-                ", ownerID=" + ownerID +
-                ", authID=" + authID +
-                '}';
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Shared that = (Shared) o;
-        return Objects.equals(PAid, that.PAid) && Objects.equals(photoID, that.photoID) && Objects.equals(ownerID, that.ownerID) && Objects.equals(authID, that.authID);
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        Shared shared = (Shared) o;
+        return PAid != null && Objects.equals(PAid, shared.PAid);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(PAid, photoID, ownerID, authID);
-    }
-
-    public String getPAid() {
-        return PAid;
-    }
-
-    public void setPAid(String PAid) {
-        this.PAid = PAid;
-    }
-
-    public String getPhotoID() {
-        return photoID;
-    }
-
-    public void setPhotoID(String photoID) {
-        this.photoID = photoID;
-    }
-
-    public Integer getOwnerID() {
-        return ownerID;
-    }
-
-    public void setOwnerID(Integer ownerID) {
-        this.ownerID = ownerID;
-    }
-
-    public Integer getAuthID() {
-        return authID;
-    }
-
-    public void setAuthID(Integer authID) {
-        this.authID = authID;
-    }
-
-    public Shared(String PAid, String photoID, Integer ownerID, Integer authID) {
-        this.PAid = PAid;
-        this.photoID = photoID;
-        this.ownerID = ownerID;
-        this.authID = authID;
+        return getClass().hashCode();
     }
 }
