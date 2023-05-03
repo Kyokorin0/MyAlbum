@@ -13,7 +13,7 @@ import java.util.List;
  * @Description
  */
 @RestController
-@RequestMapping("api/v1/photos")
+@RequestMapping("api/v1/admin/photos")
 public class PhotoCon {
     private PhotoServ photoServ;
 

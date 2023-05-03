@@ -48,10 +48,10 @@ public class MyUser implements UserDetails {
     //username、password为security需要的字段，getPassword()由@Data自动生成了
     private String password;
     private String nickname;
-    private boolean isAccountNonExpired;
-    private boolean isAccountNonLocked;
-    private boolean isCredentialsNonExpired;
-    private boolean isEnabled;
+    private boolean isAccountNonExpired=true;
+    private boolean isAccountNonLocked=true;
+    private boolean isCredentialsNonExpired=true;
+    private boolean isEnabled=true;
 
 
     @Column(name = "email")

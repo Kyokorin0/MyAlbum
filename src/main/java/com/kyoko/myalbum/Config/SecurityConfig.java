@@ -1,7 +1,7 @@
 package com.kyoko.myalbum.Config;
 
 import com.kyoko.myalbum.Filter.JwtAuthenticationFilter;
-import jakarta.servlet.Filter;
+import com.kyoko.myalbum.Property.ProjProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,6 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+    private final ProjProperties projProperties;
     private final JwtAuthenticationFilter JwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
 
@@ -29,7 +30,7 @@ public class SecurityConfig {
         httpSecurity
                 .csrf().disable()//禁用crsf()
                 .authorizeHttpRequests()
-                .requestMatchers("/api/v1/auth/**")
+                .requestMatchers(projProperties.getSecurityWhiteList())
                 .permitAll()//白名单：列表中的请求
                 .anyRequest()
                 .authenticated()//其他请求需要经过jwt过滤器

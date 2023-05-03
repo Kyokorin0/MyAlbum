@@ -1,10 +1,13 @@
 package com.kyoko.myalbum.Filter.Util;
 
+import com.kyoko.myalbum.Property.ProjProperties;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -36,21 +39,29 @@ import java.util.function.Function;
 @Service//交由Spring容器管理，提供JwtToken解析服务
 public class JwtTokenUtil {
     //JwtSigningSecretKey，可以在application.yml中设置
-    private static String SECRET_KEY = "UTQYj/6aTPlLGBqHagHnXm6BesHET25XaKwSBEEVeEU=";
+    private final String SECRET_KEY;
+
+    @Autowired
+    public JwtTokenUtil(ProjProperties projProperties) {
+        this.SECRET_KEY = projProperties.getJwtSigningSecretKey();
+    }
+
+
+
 
     //验证token是否有效，包括是否与userDetails信息一致，是否过期
-    public boolean isTokenValid(String jwtToken, UserDetails userDetails) {
+    public boolean isTokenValid(String jwtToken, UserDetails userDetails) throws Exception {
         final String username = extractUsername(jwtToken);
         return username.equals(userDetails.getUsername()) && !isTokenExpired(jwtToken);//注意这里isTokenExpired取反
     }
 
     //验证Expiration日期是否在当前时间之前，false未过期，true过期
-    private boolean isTokenExpired(String jwtToken) {
+    private boolean isTokenExpired(String jwtToken) throws Exception {
         return extractExpiration(jwtToken).before(new Date());//Date()默认返回当前系统时间
     }
 
-    private Date extractExpiration(String jwtToken){
-        return extractClaim(jwtToken,Claims::getExpiration);//相当于调用Claims.getExpiration()?
+    private Date extractExpiration(String jwtToken) throws Exception {
+        return extractClaim(jwtToken, Claims::getExpiration);//相当于调用Claims.getExpiration()?
     }
 
     public String generateToken(UserDetails userDetails) {
@@ -71,22 +82,31 @@ public class JwtTokenUtil {
     }
 
     //解析username
-    public String extractUsername(String jwtToken) {
+    public String extractUsername(String jwtToken) throws Exception {
         return extractClaim(jwtToken, Claims::getSubject);//相当于调用claims.getSubject()方法？
     }
 
-    public <T> T extractClaim(String jwtToken, Function<Claims, T> claimsResolver) {
+    public <T> T extractClaim(String jwtToken, Function<Claims, T> claimsResolver) throws Exception {
         final Claims claims = extractAllClaims(jwtToken);
         return claimsResolver.apply(claims);
     }
 
     //解析所有声明
-    private Claims extractAllClaims(String jwtToken) {
-        return Jwts.parserBuilder()
-                .setSigningKey(getSigningKey())//获取并配置签名密钥到解析器
-                .build()
-                .parseClaimsJws(jwtToken)//解析到声明
-                .getBody();
+    private Claims extractAllClaims(String jwtToken) throws Exception {
+        Claims claims;
+        try {
+            claims = Jwts.parserBuilder()
+                    .setSigningKey(getSigningKey())//获取并配置签名密钥到解析器
+                    .build()
+                    .parseClaimsJws(jwtToken)//抛出多种异常，由JwtFilter统一处理
+                    //解析到声明
+                    .getBody();
+        } catch (ExpiredJwtException e) {
+            claims = e.getClaims();
+        } catch (Exception e) {
+            throw e;
+        }
+        return claims;
     }
 
     private Key getSigningKey() {

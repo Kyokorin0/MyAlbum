@@ -34,6 +34,10 @@ public class UserServImpl implements UserServ {
                 .email(reqUser.email())
                 .password(reqUser.password())
                 .nickname(reqUser.nickname())
+                .isAccountNonExpired(true)
+                .isAccountNonLocked(true)
+                .isCredentialsNonExpired(true)
+                .isEnabled(true)
                 .build();
         userRepo.save(toAddMyUser);
     }

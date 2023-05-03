@@ -13,7 +13,7 @@ import java.util.List;
  * @Description
  */
 @RestController
-@RequestMapping("api/v1/users")
+@RequestMapping("api/v1/admin/users")
 public class MyUserCon {
     private final UserServImpl userServ;
 
@@ -23,7 +23,7 @@ public class MyUserCon {
 
 
     @GetMapping()
-    public List<MyUser> getUsers() {
+    public List<MyUser> getUsers(@RequestHeader("Authorization")String auth) {
         return userServ.getUsers();
     }
 
