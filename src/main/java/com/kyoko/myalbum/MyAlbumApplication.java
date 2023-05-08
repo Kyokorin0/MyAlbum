@@ -1,6 +1,6 @@
 package com.kyoko.myalbum;
 
-import com.kyoko.myalbum.Property.ProjProperties;
+import com.kyoko.myalbum.properties.ProjProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

@@ -3,10 +3,9 @@ package com.kyoko.myalbum.Outdated;
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.Metadata;
-import com.kyoko.myalbum.Enum.EnumCode;
-import com.kyoko.myalbum.Exception.MyException;
-import com.kyoko.myalbum.Property.ProjProperties;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.kyoko.myalbum.enumCode.EnumCode;
+import com.kyoko.myalbum.exception.MyException;
+import com.kyoko.myalbum.properties.ProjProperties;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.util.StringUtils;
@@ -27,7 +26,6 @@ public class FileStorageService {
 
     private final Path fileStorageLocation;
 
-    @Autowired
 
     public FileStorageService(ProjProperties projProperties) {
         //改写为绝对路径，如果没有盘符则默认为C盘？,不能创建Users下的目录？

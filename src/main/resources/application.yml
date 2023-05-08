@@ -35,6 +35,15 @@ spring:
       file-size-threshold: 2KB # Threshold after which files are written to disk.
       max-file-size: 200MB
       max-request-size: 215MB
+  mail:
+    host: smtp.163.com
+    protocol: smtp
+    default-encoding: utf-8
+    #发件用邮箱
+    username: bengdi6133939ro@163.com
+    #自己的授权码
+    password: GWXPFVGCANHZQMGX
+    test-connection: true
 proj:
 
   #无需校验的路径
@@ -48,8 +57,10 @@ proj:
   jwt-signing-secret-key: UTQYj/6aTPlLGBqHagHnXm6BesHET25XaKwSBEEVeEU=
   #项目存储的文件路径 不配置默认C://uploads//default
   file-storage-path: C://uploads//album
-  #秒为单位 long数据类型 60*60*24 = 86400 这里是24小时
-  token-expiration: 86400
+  #jwt有效期 秒为单位 long数据类型 60*60*24 = 86400 这里是24小时
+  jwt-token-expiration: 86400
+  #邮箱验证用的token有效期 分为单位
+  confirm-token-expiration: 15
 
 
 
