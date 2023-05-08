@@ -13,8 +13,15 @@ import org.springframework.stereotype.Component;
 @Getter
 public class ProjProperties {
     private String[] SecurityWhiteList;
+
     private String JwtSigningSecretKey;
     private String FileStoragePath="C://uploads//default";
+    //秒为单位
+    private long TokenExpiration= 60*60*24;
+
+    public void setTokenExpiration(long tokenExpiration) {
+        TokenExpiration = tokenExpiration;
+    }
 
     public void setFileStoragePath(String fileStoragePath) {
         FileStoragePath = fileStoragePath;

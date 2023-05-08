@@ -1,4 +1,4 @@
-package com.kyoko.myalbum.File;
+package com.kyoko.myalbum.Outdated;
 
 public class FileStorageException extends RuntimeException {
     public FileStorageException(String message) {

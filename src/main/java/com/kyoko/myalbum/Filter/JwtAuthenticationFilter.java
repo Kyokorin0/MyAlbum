@@ -5,7 +5,7 @@ import com.kyoko.myalbum.Enum.EnumCode;
 import com.kyoko.myalbum.Exception.MyException;
 import com.kyoko.myalbum.Filter.Util.JwtTokenUtil;
 import com.kyoko.myalbum.Filter.Util.MyUserDetailsUtil;
-import com.kyoko.myalbum.Util.ResultUtil;
+import com.kyoko.myalbum.Result.Result;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -62,30 +62,44 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             if (UserEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 //验证userDetails是否与数据库中的MyUser匹配
                 MyUser userDetails = (MyUser) this.myUserDetailsUtil.loadUserByUsername(UserEmail);//本项目采用UserEmail作为username
-                //简单的权限验证
-                String role = userDetails.getRole().name();
+                //if语句验证token是否有效，包括一致性和时效性
                 if (jwtTokenUtil.isTokenValid(JwtToken, userDetails)) {
                     //更新SecurityContextHolder，并将请求发送到DispatcherServlet
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                             userDetails,
                             null,
                             userDetails.getAuthorities()
-                    );//spring用来更新SecurityContextHolder
+                    );
+                    //spring用来更新SecurityContextHolder
                     authToken.setDetails(
-                            new WebAuthenticationDetailsSource().buildDetails(request)
+                            new WebAuthenticationDetailsSource()
+                                    .buildDetails(request)
                     );
                     SecurityContextHolder.getContext().setAuthentication(authToken);
-                    //admin路径访问控制
+
+
+                    //简单的权限验证，admin路径访问控制
+                    String role = userDetails.getRole().name();
                     if (uri.startsWith("/api/v1/admin/") && !role.equals("ADMIN")) {
-                        throw new MyException(ResultUtil.result(EnumCode.UNAUTHORIZED.getValue(), "用户权限不足"));
+                        throw new MyException(Result.builder()
+                                .code(EnumCode.UNAUTHORIZED.getValue())
+                                .msg("用户权限不足")
+                                .build().toJson());
+                        //ResultUtil.result(EnumCode.UNAUTHORIZED.getValue(), "用户权限不足"));
                     }
                 } else {
-                    throw new MyException(ResultUtil.result(EnumCode.UNAUTHORIZED.getValue(), "失效token"));
+                    throw new MyException(Result.builder()
+                            .code(EnumCode.UNAUTHORIZED.getValue())
+                            .msg("失效token")
+                            .build().toJson());
+                    //ResultUtil.result(EnumCode.UNAUTHORIZED.getValue(), "失效token"));
                 }
             }
             //最后将请求递给下个过滤器
             filterChain.doFilter(request, response);
-        } catch (MyException e) {
+        }
+        //统一处理的异常
+        catch (MyException e) {
             response.setCharacterEncoding("UTF-8");
             response.setContentType("application/json; charset=utf-8");
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -97,7 +111,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             response.setContentType("application/json; charset=utf-8");
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write(
-                    ResultUtil.result(EnumCode.EXCPTION_ERROR.getValue(), "找不到用户信息")
+                    Result.builder()
+                            .code(EnumCode.UNAUTHORIZED.getValue())
+                            .msg("找不到用户信息")
+                            .build().toJson()
+                    //ResultUtil.result(EnumCode.EXCPTION_ERROR.getValue(), "找不到用户信息")
             );
         }
         //由jwtTokenUtil.extractUsername(JwtToken)抛出
@@ -106,7 +124,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             response.setContentType("application/json; charset=utf-8");
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write(
-                    ResultUtil.result(EnumCode.EXCPTION_ERROR.getValue(), "非法token", e.getMessage())
+                    Result.builder()
+                            .code(EnumCode.UNAUTHORIZED.getValue())
+                            .msg(e.getMessage())
+                            .data(e)
+                            .build().toJson()
+                    //ResultUtil.result(EnumCode.EXCPTION_ERROR.getValue(), "非法token", e.getMessage())
             );
         }
     }

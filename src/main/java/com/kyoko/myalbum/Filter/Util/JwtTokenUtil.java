@@ -40,10 +40,12 @@ import java.util.function.Function;
 public class JwtTokenUtil {
     //JwtSigningSecretKey，可以在application.yml中设置
     private final String SECRET_KEY;
+    private final long TOKEN_EXPIRATION;
 
     @Autowired
     public JwtTokenUtil(ProjProperties projProperties) {
-        this.SECRET_KEY = projProperties.getJwtSigningSecretKey();
+        SECRET_KEY = projProperties.getJwtSigningSecretKey();
+        TOKEN_EXPIRATION = projProperties.getTokenExpiration();
     }
 
 
@@ -76,7 +78,7 @@ public class JwtTokenUtil {
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())//设置账户名
                 .setIssuedAt(new Date(System.currentTimeMillis()))//设置声明时间
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))//设置令牌时效，这里是24小时+1秒
+                .setExpiration(new Date(System.currentTimeMillis() + TOKEN_EXPIRATION*1000))//设置令牌时效，这里是24小时+1秒
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)//设置签名密钥和对应算法
                 .compact();
     }

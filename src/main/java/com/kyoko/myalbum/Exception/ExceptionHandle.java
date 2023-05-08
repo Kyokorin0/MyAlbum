@@ -1,7 +1,7 @@
 package com.kyoko.myalbum.Exception;
 
 import com.kyoko.myalbum.Enum.EnumCode;
-import com.kyoko.myalbum.Util.ResultUtil;
+import com.kyoko.myalbum.Result.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.AuthenticationException;
@@ -30,11 +30,22 @@ public class ExceptionHandle {
             return myException.getResult();
         } else if (e instanceof AuthenticationException) {
             AuthenticationException authenticationException = (AuthenticationException) e;
-            return ResultUtil.result(EnumCode.LOGIN_FAIL.getValue(), authenticationException.getMessage());
+            return Result.builder()
+                    .code(EnumCode.LOGIN_FAIL.getValue())
+                    .msg("用户名不存在！")
+                    .data(authenticationException.getMessage())
+                    .build()
+                    .toJson();
+                    //ResultUtil.result(EnumCode.LOGIN_FAIL.getValue(), authenticationException.getMessage());
         } else {
             //不配置jwt签名密钥报过这个
-            log.info("系统异常 {}", e);
-            return ResultUtil.result(-1, "未知错误");
+            log.info("系统异常！", e);
+            return Result.builder()
+                    .code(EnumCode.EXCPTION_ERROR.getValue())
+                    .msg("未知错误")
+                    .data(e)
+                    .build().toJson();
+                    //ResultUtil.result(-1, "未知错误");
         }
     }
 }

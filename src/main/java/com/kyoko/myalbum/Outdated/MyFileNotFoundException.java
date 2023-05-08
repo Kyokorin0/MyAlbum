@@ -1,4 +1,4 @@
-package com.kyoko.myalbum.File;
+package com.kyoko.myalbum.Outdated;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

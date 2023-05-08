@@ -28,10 +28,18 @@ public class PhotoServImpl implements PhotoServ {
 
     @Override
     public void addPhoto(ReqPhoto reqPhoto) {
-        Photo ToAddPhoto = new Photo();
-        ToAddPhoto.setPhotoName(reqPhoto.photoName());
-        ToAddPhoto.setMd5(reqPhoto.md5());
-        ToAddPhoto.setOwnerID(reqPhoto.ownerID());
+        //exif_json由uploadFileServ写入
+        Photo ToAddPhoto = Photo.builder()
+                .pid(reqPhoto.pid())
+                .photoName(reqPhoto.photoName())
+                .ownerID(reqPhoto.ownerID())
+                .md5(reqPhoto.md5())
+                .photoPath(reqPhoto.photoPath())
+                .shared(reqPhoto.shared())
+                .build();
         photoRepo.save(ToAddPhoto);
     }
+
+
+
 }

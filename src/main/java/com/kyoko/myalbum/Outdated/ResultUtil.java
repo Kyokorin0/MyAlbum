@@ -1,11 +1,11 @@
-package com.kyoko.myalbum.Util;
+package com.kyoko.myalbum.Outdated;
 
 import org.json.JSONObject;
 
 /**
  * @author young
  * @create 2023/3/23 16:33
- * @Description
+ * @Description 最开始使用的统一封装对象，适配gson后由com.kyoko.myalbum.Result.Result.class代替
  */
 //封装返回结果
 public class ResultUtil {

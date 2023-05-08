@@ -1,9 +1,6 @@
 package com.kyoko.myalbum.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.UuidGenerator;
@@ -38,6 +35,7 @@ public class Photo {
     private String photoName;
     private String photoPath;
     private Integer ownerID;//foreign
+    @Column(name = "exifJson",columnDefinition = "json")
     private String exif;//json?
     private Boolean shared;//yes-true no-false default-false
 

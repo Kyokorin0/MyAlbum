@@ -3,10 +3,12 @@ package com.kyoko.myalbum.Auth;
 import com.kyoko.myalbum.DAO.MyUserRepo;
 import com.kyoko.myalbum.Entity.MyUser;
 import com.kyoko.myalbum.Enum.Role;
+import com.kyoko.myalbum.Exception.MyException;
 import com.kyoko.myalbum.Filter.Util.JwtTokenUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -49,7 +51,7 @@ public class AuthenticationService {
                 )
         );//验证账户名和密码，不匹配会抛出异常
         MyUser myUser = repo.findByEmail(request.getEmail())
-                .orElseThrow();//其他异常
+                .orElseThrow(()->new MyException("用户不存在！"));//其他异常
         String generateToken = jwtTokenUtil.generateToken(myUser);
         return AuthenticationResponse.builder()
                 .token(generateToken)

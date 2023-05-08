@@ -6,6 +6,7 @@ package com.kyoko.myalbum.record;
  * @Description
  */
 public record ReqPhoto(
+        String pid,
        String photoName,
        String md5,
        String photoPath,
