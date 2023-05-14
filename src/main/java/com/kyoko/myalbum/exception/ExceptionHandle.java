@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -30,16 +31,6 @@ public class ExceptionHandle {
         if (e instanceof MyException myException) {
             return myException.getResult();
         }
-        //处理登录验证异常
-        else if (e instanceof AuthenticationException authenticationException) {
-            return Result.builder()
-                    .code(EnumCode.LOGIN_FAIL.getValue())
-                    .msg("用户名不存在！")
-                    .data(authenticationException.getMessage())
-                    .build()
-                    .toJson();
-            //ResultUtil.result(EnumCode.LOGIN_FAIL.getValue(), authenticationException.getMessage());
-        }
         //处理接口参数缺失异常
         else if (e instanceof MissingServletRequestParameterException) {
             return Result.builder()
@@ -58,6 +49,15 @@ public class ExceptionHandle {
                     .build()
                     .toJson();
         }
+        //错误的请求方式
+        else if(e instanceof HttpRequestMethodNotSupportedException){
+            return Result.builder()
+                    .code(EnumCode.BAD_REQUEST.getValue())
+                    .msg("错误的请求方式！")
+                    .data(e.getMessage())
+                    .build()
+                    .toJson();
+        }
         //其他异常
         else {
             //不配置jwt签名密钥报过这个
@@ -65,7 +65,7 @@ public class ExceptionHandle {
             return Result.builder()
                     .code(EnumCode.EXCEPTION_ERROR.getValue())
                     .msg("未知错误")
-                    .data(e)
+                    .data(e.getMessage())
                     .build().toJson();
             //ResultUtil.result(-1, "未知错误");
         }

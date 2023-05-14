@@ -6,6 +6,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -27,6 +28,7 @@ public class PhotoConfig {
             Photo1.setOwnerID(10000);
             Photo1.setPhotoPath("defaultPath");
             Photo1.setShared(false);
+            Photo1.setCreateAt(new Date(System.currentTimeMillis()));
 
             Photo2.setPid("PhotoId2");//无效
             Photo2.setPhotoName("SecondPhoto");
@@ -34,7 +36,11 @@ public class PhotoConfig {
             Photo2.setOwnerID(10001);
             Photo2.setPhotoPath("defaultPath");
             Photo2.setShared(false);
+            Photo2.setCreateAt(new Date(System.currentTimeMillis()));
 
+
+            photoRepo.saveAll(List.of(Photo1, Photo2));
+            photoRepo.saveAll(List.of(Photo1, Photo2));
             photoRepo.saveAll(List.of(Photo1, Photo2));
 
         };

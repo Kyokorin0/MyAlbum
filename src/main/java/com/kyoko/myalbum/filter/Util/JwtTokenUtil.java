@@ -1,6 +1,9 @@
 package com.kyoko.myalbum.filter.Util;
 
+import com.kyoko.myalbum.enumCode.EnumCode;
+import com.kyoko.myalbum.exception.MyException;
 import com.kyoko.myalbum.properties.ProjProperties;
+import com.kyoko.myalbum.result.Result;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -106,7 +109,11 @@ public class JwtTokenUtil {
         } catch (ExpiredJwtException e) {
             claims = e.getClaims();
         } catch (Exception e) {
-            throw e;
+            throw new MyException(Result.builder()
+                    .code(EnumCode.FORBIDDEN.getValue())
+                    .msg("错误的token！")
+                    .data(jwtToken)
+                    .build().toJson());
         }
         return claims;
     }

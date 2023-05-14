@@ -51,7 +51,7 @@ proj:
     [
         "/api/v1/auth/**",
         "/api/v1/demo/**",
-        "/file/**"
+        "/file/downloadFile/**"
     ]
   #自己的64位签名密钥
   jwt-signing-secret-key: UTQYj/6aTPlLGBqHagHnXm6BesHET25XaKwSBEEVeEU=

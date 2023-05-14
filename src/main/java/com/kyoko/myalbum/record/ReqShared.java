@@ -6,8 +6,10 @@ package com.kyoko.myalbum.record;
  * @Description
  */
 public record ReqShared(
+        String paID,
         String photoID,//foreign？
         Integer ownerID,
-        Integer authID
+        Integer authID,
+        String message
 ) {
 }

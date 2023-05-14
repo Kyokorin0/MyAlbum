@@ -1,5 +1,6 @@
 package com.kyoko.myalbum.file;
 
+import com.kyoko.myalbum.entity.MyUser;
 import com.kyoko.myalbum.enumCode.EnumCode;
 import com.kyoko.myalbum.result.Result;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,6 +10,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,8 +35,10 @@ public class FileCon {
 
     @PostMapping("/uploadFile")
     public Object uploadFile(@RequestParam("file") MultipartFile file) {
-        //todo 验证uid
-        RespFile respFile = fileStorageServ.storeFile(file, 10001);
+        //验证uid
+        SecurityContext context = SecurityContextHolder.getContext();
+        MyUser user = (MyUser) context.getAuthentication().getPrincipal();
+        RespFile respFile = fileStorageServ.storeFile(file, user.getUid());
 
 
         return Result.builder()
@@ -45,10 +50,12 @@ public class FileCon {
     }
 
     @PostMapping("/uploadMultipleFiles")
-    public Object uploadMultipleFiles(@RequestParam("files") MultipartFile[] files, @RequestHeader HttpHeaders headers) {
+    public Object uploadMultipleFiles(@RequestParam("files") MultipartFile[] files) {
+        SecurityContext context = SecurityContextHolder.getContext();
+        MyUser user = (MyUser) context.getAuthentication().getPrincipal();
         List<Object> collect = Arrays.asList(files)
                 .stream()
-                .map(file -> fileStorageServ.storeFile(file, 10001))
+                .map(file -> fileStorageServ.storeFile(file, user.getUid()))
                 .collect(Collectors.toList());
         return Result.builder()
                 .code(EnumCode.OK.getValue())

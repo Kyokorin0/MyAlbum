@@ -5,6 +5,8 @@ import lombok.*;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.UuidGenerator;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -38,6 +40,8 @@ public class Photo {
     @Column(name = "exifJson",columnDefinition = "json")
     private String exif;//json?
     private Boolean shared;//yes-true no-false default-false
+    //创建时间
+    private Date createAt;
 
     @Override
     public boolean equals(Object o) {

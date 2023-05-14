@@ -7,10 +7,10 @@ package com.kyoko.myalbum.record;
  */
 public record ReqPhoto(
         String pid,
-       String photoName,
-       String md5,
-       String photoPath,
-       Integer ownerID,//foreign
-       String exif,//json?
-       Boolean shared)
-{}
+        String photoName,
+        String md5,
+        String photoPath,
+        Integer ownerID,//foreign
+        String exif,//json?
+        Boolean shared) {
+}

@@ -43,14 +43,14 @@ public class MyUserConfig {
             myUser1.setUid(10003);//无效，主键自动生成
             myUser1.setPassword(passwordEncoder.encode("123456"));
             myUser1.setNickname("FirstU");
-            myUser1.setEmail("10001@email.com");
+            myUser1.setEmail("10000@email.com");
             myUser1.setEnabled(true);
             myUser1.setRole(Role.ADMIN);
 
 
             myUser2.setPassword(passwordEncoder.encode("123456"));
             myUser2.setNickname("SecondU");
-            myUser2.setEmail("10002@email.com");
+            myUser2.setEmail("10001@email.com");
             myUser2.setEnabled(true);
             myUser2.setRole(Role.ADMIN);
 

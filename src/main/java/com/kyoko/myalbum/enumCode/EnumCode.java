@@ -13,6 +13,7 @@ public enum EnumCode {
     /**
      * 303登录失败
      */
+    NOT_USER(402,"未注册"),
     LOGIN_FAIL(303, "登录失败"),
     /**
      * 400请求参数出错

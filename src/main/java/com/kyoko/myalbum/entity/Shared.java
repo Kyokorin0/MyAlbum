@@ -8,6 +8,7 @@ import lombok.*;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.UuidGenerator;
 
+import java.util.Date;
 import java.util.Objects;
 
 
@@ -35,6 +36,10 @@ public class Shared {
     )//自生成string类型主键，关于时间
     private String PAid;//Photo-AuthedUser primary
     private String photoID;//foreign？
+    private String photoPath;
+    private String photoName;
+    private String message;
+    private Date shareAt;
     private Integer ownerID;
     private Integer authID;
 

@@ -1,8 +1,8 @@
 package com.kyoko.myalbum.controller;
 
 import com.kyoko.myalbum.entity.Photo;
-import com.kyoko.myalbum.service.MAPPER.PhotoServ;
 import com.kyoko.myalbum.record.ReqPhoto;
+import com.kyoko.myalbum.service.MAPPER.PhotoServ;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,11 +20,11 @@ public class PhotoCon {
     public PhotoCon(PhotoServ photoServ) {
         this.photoServ = photoServ;
     }
+
     @GetMapping()
     public List<Photo> getPhotos() {
         return photoServ.getPhotos();
     }
-
 
 
     @PostMapping()

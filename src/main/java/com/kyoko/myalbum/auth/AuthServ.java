@@ -9,13 +9,16 @@ import com.kyoko.myalbum.enumCode.Role;
 import com.kyoko.myalbum.exception.MyException;
 import com.kyoko.myalbum.filter.Util.JwtTokenUtil;
 import com.kyoko.myalbum.properties.ProjProperties;
+import com.kyoko.myalbum.record.UserInfo;
 import com.kyoko.myalbum.result.Result;
 import com.kyoko.myalbum.service.IMPL.ConfirmServImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.time.LocalDateTime;
@@ -43,6 +46,7 @@ public class AuthServ {
     public String register(RegisterRequest request) {
         //验证邮箱是否有效
         boolean isValid = emailValidator.test(request.getEmail());
+        Integer uid = null;
         if (!isValid) {
             throw new MyException(Result.builder()
                     .code(EnumCode.BAD_REQUEST.getValue())
@@ -59,7 +63,10 @@ public class AuthServ {
                     .data(request.getEmail())
                     .build().toJson());
         }
+        if(findUser.isPresent())
+            uid  = findUser.get().getUid();
         MyUser myUser = MyUser.builder()
+                .uid(uid)
                 .nickname(request.getNickname())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
@@ -113,23 +120,55 @@ public class AuthServ {
         repo.enableMyUser(myUser.getEmail());
         return AuthResp.builder()
                 .token(jwt)
+                .userInfo(new UserInfo(
+                        myUser.getUid(),
+                        myUser.getNickname(),
+                        myUser.getEmail()))
                 .build();
 
     }
 
     public AuthResp authenticate(AuthReq request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()
-                )
-        );//验证账户名和密码，不匹配会抛出异常
-        MyUser myUser = repo.findByEmail(request.getEmail())
-                .orElseThrow(() -> new MyException("用户不存在！"));//其他异常
-        String generateToken = jwtTokenUtil.generateToken(myUser);
-        return AuthResp.builder()
-                .token(generateToken)
-                .build();
+        //先验证用户是否存在
+        Optional<MyUser> findUser = repo.findByEmail(request.getEmail());
+        if (!findUser.isPresent()){
+            throw new MyException(Result.builder()
+                    .code(EnumCode.NOT_USER.getValue())
+                    .msg("该邮箱未注册，请先注册！")
+                    .data(request.getEmail())
+                    .build().toJson());
+        }else if(!findUser.get().isEnabled()){
+            throw new MyException(Result.builder()
+                    .code(EnumCode.NOT_USER.getValue())
+                    .msg("该邮箱未激活，请前往邮箱激活或重新注册！")
+                    .data(request.getEmail())
+                    .build().toJson());
+        }else {
+            try {
+                //验证账户名和密码，不匹配会抛出异常
+                authenticationManager.authenticate(
+                        new UsernamePasswordAuthenticationToken(
+                                request.getEmail(),
+                                request.getPassword()
+                        )
+                );
+            } catch (AuthenticationException e) {
+                    throw new MyException(Result.builder()
+                            .code(EnumCode.LOGIN_FAIL.getValue())
+                            .msg("用户名或密码错误！")
+                            .data(e.getMessage())
+                            .build()
+                            .toJson());
+            }
+            String generateToken = jwtTokenUtil.generateToken(findUser.get());
+            return AuthResp.builder()
+                    .token(generateToken)
+                    .userInfo(new UserInfo(
+                            findUser.get().getUid(),
+                            findUser.get().getNickname(),
+                            findUser.get().getEmail()))
+                    .build();
+        }
     }
     //邮件模板
     private String buildEmail(String name, String link) {

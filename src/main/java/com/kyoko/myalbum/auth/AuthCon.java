@@ -18,7 +18,7 @@ public class AuthCon {
 
     private final AuthServ service;
     @PostMapping("/register")
-    public Object register(@RequestBody RegisterRequest request) {
+    public String register(@RequestBody RegisterRequest request) {
         String regResp = service.register(request);
         return Result.builder()
                 .code(EnumCode.OK.getValue())
@@ -27,7 +27,7 @@ public class AuthCon {
                 .build().toJson();
     }
     @GetMapping("/confirm")
-    public Object confirm(@RequestParam("token") String token){
+    public String confirm(@RequestParam("token") String token){
         AuthResp authResp = service.confirmToken(token);
         return Result.builder()
                 .code(EnumCode.OK.getValue())
@@ -37,8 +37,14 @@ public class AuthCon {
     }
 
     @PostMapping("/authenticate")
-    public ResponseEntity<AuthResp> authenticate(@RequestBody AuthReq request) {
+    public String authenticate(@RequestBody AuthReq request) {
+        AuthResp authResp = service.authenticate(request);
+        return Result.builder()
+                .code(EnumCode.OK.getValue())
+                .msg("登录成功！")
+                .data(authResp)
+                .build().toJson();
 
-        return ResponseEntity.ok(service.authenticate(request));
+        //return ResponseEntity.ok(service.authenticate(request));
     }
 }

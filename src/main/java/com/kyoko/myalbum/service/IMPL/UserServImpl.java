@@ -2,11 +2,14 @@ package com.kyoko.myalbum.service.IMPL;
 
 import com.kyoko.myalbum.dao.MyUserRepo;
 import com.kyoko.myalbum.entity.MyUser;
+import com.kyoko.myalbum.entity.Photo;
 import com.kyoko.myalbum.service.MAPPER.UserServ;
 import com.kyoko.myalbum.record.ReqUser;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author young
@@ -36,5 +39,10 @@ public class UserServImpl implements UserServ {
                 .nickname(reqUser.nickname())
                 .build();
         userRepo.save(toAddMyUser);
+    }
+    @Override
+    //sortBy是Photo表的属性
+    public Optional<MyUser> findUserByID(Integer uid) {
+        return userRepo.findById(uid);
     }
 }

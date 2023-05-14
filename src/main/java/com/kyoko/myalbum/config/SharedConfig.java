@@ -20,6 +20,7 @@ public class SharedConfig {
   return args -> {
    Shared shared1 = new Shared();
    Shared shared2 = new Shared();
+   Shared shared3 = new Shared();
 
    shared1.setPhotoID("PhotoId1");
    shared1.setOwnerID(10000);
@@ -29,7 +30,11 @@ public class SharedConfig {
    shared2.setOwnerID(10001);
    shared2.setAuthID(10000);
 
-   sharedRepo.saveAll(List.of(shared1,shared2));
+   shared3.setPhotoID("PhotoId1");
+   shared3.setOwnerID(10000);
+   shared3.setAuthID(10002);
+
+   sharedRepo.saveAll(List.of(shared1,shared2,shared3));
   };
  }
 }

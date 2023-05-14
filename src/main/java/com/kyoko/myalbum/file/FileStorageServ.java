@@ -23,6 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Date;
 import java.util.HashMap;
 
 /**
@@ -124,15 +125,20 @@ public class FileStorageServ {
                 .photoName(fileName)
                 .ownerID(uid)
                 .exif(exifJson)
+                .createAt(new Date(System.currentTimeMillis()))
+                .shared(false)
                 .build();
 
         //获取生成的photo对象，根据pid设置保存位置
         Photo saved = photoRepo.save(ToAddPhoto);
         String pid = saved.getPid();
+        //获取服务器的真实路径
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("file/downloadFile/")
                 .path(pid + fileSuffix)
                 .toUriString();
+        saved.setPhotoPath(fileDownloadUri);
+        photoRepo.save(saved);
         RespFile respFile = RespFile.builder()
                 .isSuccess(true)
                 .fileName(fileName)
@@ -163,17 +169,26 @@ public class FileStorageServ {
     }
 
     //
-    public Resource loadFileAsResource(String pid) {
+    public Resource loadFileAsResource(String fileName) {
         try {
-            Path filePath = this.fileStorageLocation.resolve(pid).normalize();
+            Path filePath = this.fileStorageLocation.resolve(fileName).normalize();
             Resource resource = new UrlResource(filePath.toUri());
+
             if (resource.exists()) {
                 return resource;
             } else {
-                throw new MyFileNotFoundException("File not found " + pid);
+                throw new MyException(Result.builder()
+                        .code(EnumCode.GONE.getValue())
+                        .msg("文件不存在！")
+                        .data(fileName)
+                        .build().toJson());
             }
         } catch (MalformedURLException ex) {
-            throw new MyFileNotFoundException("File not found " + pid, ex);
+            throw new MyException(Result.builder()
+                    .code(EnumCode.GONE.getValue())
+                    .msg("文件不存在！")
+                    .data(fileName)
+                    .build().toJson());
         }
     }
 }

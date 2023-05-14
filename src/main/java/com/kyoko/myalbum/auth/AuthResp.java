@@ -1,5 +1,6 @@
 package com.kyoko.myalbum.auth;
 
+import com.kyoko.myalbum.record.UserInfo;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,4 +17,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AuthResp {
  private String token;
+ private UserInfo userInfo;
 }
